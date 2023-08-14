@@ -69,15 +69,61 @@ namespace CatWorx.BadgeMaker
   // SKData data = newImage.Encode();
   // data.SaveTo(File.OpenWrite("data/employeeBadge.png"));
 
+  //Layout variables
+
+  int BADGE_WIDTH = 699;
+  int BADGE_HEIGHT = 1044;
+
+  int PHOTO_LEFT_X = 184;
+int PHOTO_TOP_Y = 215;
+int PHOTO_RIGHT_X = 520;
+int PHOTO_BOTTOM_Y = 517;
+
+int EMPLOYEE_NAME_Y = 600;
+
+int COMPANY_NAME_Y = 150;
+
+int EMPLOYEE_ID_Y = 730;
+
+SKPaint paint = new SKPaint();
+
+
   using (HttpClient client = new HttpClient())
 {
   for (int i = 0; i < employees.Count; i++)
   {
+    paint.TextSize = 50.20f;
+paint.IsAntialias = true;
+paint.Color = SKColors.White;
+paint.IsStroke = false;
+paint.TextAlign = SKTextAlign.Center;
+paint.Typeface = SKTypeface.FromFamilyName("Arial");
+
     SKImage photo = SKImage.FromEncodedData(await client.GetStreamAsync(employees[i].GetPhotoUrl()));
     SKImage background = SKImage.FromEncodedData(File.OpenRead("badge.png"));
+
+    SKBitmap badge = new SKBitmap(BADGE_WIDTH,BADGE_HEIGHT);
+
+    SKCanvas canvas = new SKCanvas(badge);
+
+    canvas.DrawImage(background, new SKRect(0,0,BADGE_WIDTH,BADGE_HEIGHT));
+
+    canvas.DrawImage(photo, new SKRect(PHOTO_LEFT_X,PHOTO_TOP_Y,PHOTO_RIGHT_X,PHOTO_BOTTOM_Y));
+
+    canvas.DrawText(employees[i].GetCompanyName(), BADGE_WIDTH / 2f, COMPANY_NAME_Y, paint );
+
+    paint.Color = SKColors.Black;
+
+    canvas.DrawText(employees[i].GetFullName(), BADGE_WIDTH /2f, EMPLOYEE_NAME_Y, paint);
+
+    paint.Typeface = SKTypeface.FromFamilyName("Courier New");
+
+    canvas.DrawText(employees[i].GetId().ToString(), BADGE_WIDTH / 2f, EMPLOYEE_ID_Y, paint);
     
-    SKData data = photo.Encode();
-    data.SaveTo(File.OpenWrite("data/employeeBadge.png"));
+    SKImage finalImage = SKImage.FromBitmap(badge);
+    SKData data = finalImage.Encode();
+    data.SaveTo(File.OpenWrite($"data/{employees[i].GetId()}_employeeBadge.png"));
+
   }
 }
 
