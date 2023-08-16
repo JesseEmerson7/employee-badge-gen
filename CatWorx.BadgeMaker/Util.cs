@@ -17,33 +17,7 @@ namespace CatWorx.BadgeMaker
       }
     }
 
-    public static List<Employee> GetEmployees(){
-            List<Employee> employees = new List<Employee>();
-      
-      bool isTyping = true;
-      while (isTyping)
-      {
-        //first name prompt
-        Console.Write("Please enter a first name: ");
-        string firstName = Console.ReadLine() ?? "";
-        if(firstName == ""){
-          break;
-        }
-        //last name prompt
-        Console.Write("Last name: ");
-        string lastName = Console.ReadLine() ?? "";
-        //ID prompt
-        Console.Write("Employee ID: ");
-        int id = Int32.Parse(Console.ReadLine() ?? "");
-        //photo url prompt
-        Console.Write("Please enter a valid Photo URL: ");
-        string photoUrl = Console.ReadLine() ?? "";
-
-        Employee currentEmployee = new Employee(firstName, lastName, id, photoUrl);
-        employees.Add(currentEmployee);
-      }
-      return employees;
-    }
+ 
 
     public static void MakeCSV (List<Employee>employees){
         if(!Directory.Exists("data")){
